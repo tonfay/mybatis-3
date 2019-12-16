@@ -1,5 +1,5 @@
 /**
- *    Copyright 2009-2016 the original author or authors.
+ *    Copyright 2009-2019 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -71,6 +71,18 @@ public class MapperMethod {
         break;
       }
       case SELECT:
+//    	  if(args == null) {
+//    		  if(DataNoThreadLocalContext.getCurrent().getDataNoList() != null) {
+//    			  args = new Object[1];
+//    			  HashMap<String, Object> param = new HashMap<>();
+//    			  param.put("dataCodeList", DataNoThreadLocalContext.getCurrent().getDataNoList());
+//    			  args[0] = param;
+//    		  }
+//    	  }else {
+//    		  int oldLength = args.length;
+//    		  args = Arrays.copyOf(args , args.length + 1);
+//    		  args[oldLength] = DataNoThreadLocalContext.getCurrent().getDataNoList();
+//    	  }
         if (method.returnsVoid() && method.hasResultHandler()) {
           executeWithResultHandler(sqlSession, args);
           result = null;
@@ -102,12 +114,18 @@ public class MapperMethod {
 	try {
 		  String key = "dataCodeList";
 		  if(DataNoThreadLocalContext.getCurrent().getDataNoList() != null) {
-			  if(param != null) {
-				  ((ParamMap<Object>)param).put(key, DataNoThreadLocalContext.getCurrent().getDataNoList());
-			  }else {
-				  param = new ParamMap<Object>();
-				  ((ParamMap<Object>)param).put(key, DataNoThreadLocalContext.getCurrent().getDataNoList());
+			  if(param == null) {
+				  param = new ParamMap();
 			  }
+			  
+			  if(param instanceof HashMap) {
+				  ((HashMap)param).put(key, DataNoThreadLocalContext.getCurrent().getDataNoList());
+			  }else if(param instanceof ParamMap) {
+				  ((ParamMap)param).put(key, DataNoThreadLocalContext.getCurrent().getDataNoList());
+			  }else {
+				 
+			  }
+			  
 		  }
 	} catch (Exception e) {
 		e.printStackTrace();

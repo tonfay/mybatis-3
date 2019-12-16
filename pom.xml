@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>mybatis</artifactId>
-  <version>3.4.1-gofun</version>
+  <version>3.4.1-gofun-A1</version>
   <packaging>jar</packaging>
 
   <name>mybatis</name>
@@ -257,6 +257,12 @@
     	<groupId>com.gofun.ms</groupId>
 		<artifactId>gofun-ms-datacode-starter</artifactId>
       	<version>1.1.0.1</version>
+      	<exclusions>
+      		<exclusion>
+      			<groupId>org.springframework.boot</groupId>
+      			<artifactId>spring-boot-starter-aop</artifactId>
+      		</exclusion>
+      	</exclusions>
     </dependency>
   </dependencies>
 
