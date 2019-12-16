@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-       Copyright 2009-2016 the original author or authors.
+       Copyright 2009-2019 the original author or authors.
 
        Licensed under the Apache License, Version 2.0 (the "License");
        you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>mybatis</artifactId>
-  <version>3.4.1</version>
+  <version>3.4.1-gofun</version>
   <packaging>jar</packaging>
 
   <name>mybatis</name>
@@ -108,7 +108,7 @@
     </contributor>
   </contributors>
 
-  <scm>
+  <!-- <scm>
     <url>http://github.com/mybatis/mybatis-3</url>
     <connection>scm:git:ssh://github.com/mybatis/mybatis-3.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mybatis/mybatis-3.git</developerConnection>
@@ -121,13 +121,23 @@
   <ciManagement>
     <system>Travis CI</system>
     <url>https://travis-ci.org/mybatis/mybatis-3/</url>
-  </ciManagement>
+  </ciManagement> -->
   <distributionManagement>
-    <site>
+    <!-- <site>
       <id>gh-pages</id>
       <name>Mybatis GitHub Pages</name>
       <url>git:ssh://git@github.com/mybatis/mybatis-3.git?gh-pages#</url>
-    </site>
+    </site> -->
+    <repository>
+			<id>nexus-releases</id>
+			<name>project release repository</name>
+			<url>http://mvn.shouqiev.com:8099/nexus/content/repositories/releases</url>
+	</repository>
+	<snapshotRepository>
+		<id>nexus-snapshots</id>
+		<name>project snapshot repository</name>
+		<url>http://mvn.shouqiev.com:8099/nexus/content/repositories/snapshots</url>
+	</snapshotRepository>
   </distributionManagement>
 
   <properties>
@@ -242,6 +252,12 @@
       <version>9.1-901-1.jdbc4</version>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+    	<groupId>com.gofun.ms</groupId>
+		<artifactId>gofun-ms-datacode-starter</artifactId>
+      	<version>1.1.0.1</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -263,10 +279,10 @@
           </systemProperties>
         </configuration>
       </plugin>
-      <plugin>
+      <!-- <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pdf-plugin</artifactId>
-      </plugin>
+      </plugin> -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>

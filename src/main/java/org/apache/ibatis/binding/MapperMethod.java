@@ -17,6 +17,7 @@ package org.apache.ibatis.binding;
 
 import org.apache.ibatis.annotations.Flush;
 import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.binding.MapperMethod.ParamMap;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -27,6 +28,8 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
+
+import com.gofun.ms.datacode.context.DataNoThreadLocalContext;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -79,6 +82,7 @@ public class MapperMethod {
           result = executeForCursor(sqlSession, args);
         } else {
           Object param = method.convertArgsToSqlCommandParam(args);
+          setDataCodeList(param);
           result = sqlSession.selectOne(command.getName(), param);
         }
         break;
@@ -93,6 +97,22 @@ public class MapperMethod {
           + " attempted to return null from a method with a primitive return type (" + method.getReturnType() + ").");
     }
     return result;
+  }
+  private Object setDataCodeList(Object param) {
+	try {
+		  String key = "dataCodeList";
+		  if(DataNoThreadLocalContext.getCurrent().getDataNoList() != null) {
+			  if(param != null) {
+				  ((ParamMap<Object>)param).put(key, DataNoThreadLocalContext.getCurrent().getDataNoList());
+			  }else {
+				  param = new ParamMap<Object>();
+				  ((ParamMap<Object>)param).put(key, DataNoThreadLocalContext.getCurrent().getDataNoList());
+			  }
+		  }
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	  return param;
   }
 
   private Object rowCountResult(int rowCount) {
@@ -119,6 +139,7 @@ public class MapperMethod {
           + " or a resultType attribute in XML so a ResultHandler can be used as a parameter.");
     }
     Object param = method.convertArgsToSqlCommandParam(args);
+    setDataCodeList(param);
     if (method.hasRowBounds()) {
       RowBounds rowBounds = method.extractRowBounds(args);
       sqlSession.select(command.getName(), param, rowBounds, method.extractResultHandler(args));
@@ -130,6 +151,7 @@ public class MapperMethod {
   private <E> Object executeForMany(SqlSession sqlSession, Object[] args) {
     List<E> result;
     Object param = method.convertArgsToSqlCommandParam(args);
+    setDataCodeList(param);
     if (method.hasRowBounds()) {
       RowBounds rowBounds = method.extractRowBounds(args);
       result = sqlSession.<E>selectList(command.getName(), param, rowBounds);
@@ -150,6 +172,7 @@ public class MapperMethod {
   private <T> Cursor<T> executeForCursor(SqlSession sqlSession, Object[] args) {
     Cursor<T> result;
     Object param = method.convertArgsToSqlCommandParam(args);
+    setDataCodeList(param);
     if (method.hasRowBounds()) {
       RowBounds rowBounds = method.extractRowBounds(args);
       result = sqlSession.<T>selectCursor(command.getName(), param, rowBounds);
@@ -176,6 +199,7 @@ public class MapperMethod {
   private <K, V> Map<K, V> executeForMap(SqlSession sqlSession, Object[] args) {
     Map<K, V> result;
     Object param = method.convertArgsToSqlCommandParam(args);
+    setDataCodeList(param);
     if (method.hasRowBounds()) {
       RowBounds rowBounds = method.extractRowBounds(args);
       result = sqlSession.<K, V>selectMap(command.getName(), param, method.getMapKey(), rowBounds);
